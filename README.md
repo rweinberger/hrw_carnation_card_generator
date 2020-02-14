@@ -36,7 +36,7 @@ Printing pages (6/6)
 Done
 ```
 
-You can ignore the warnings about failing to find a CSS file. This command will generate an example  PDF, `out/finished_<timestamp>`, based on the example responses included in this repo, `csv/example_respones.csv`.
+You can ignore the warnings about failing to find a CSS file. This command will generate an example  PDF, `out/finished_<timestamp>`, based on the example responses included in this repo, `csv/example_responses.csv`.
 
 # Usage
 
