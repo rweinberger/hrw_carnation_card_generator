@@ -44,14 +44,15 @@ def get_font_size(message):
         return DEFAULT_FONT_SZ
     else:
         overage = len(message) - MAX_MSG_LEN
-        change = math.log(1 + overage / MAX_MSG_LEN) * FONT_MULTIPLIER # logarithmic scaling - looked best from experimenting
+        # Logarithmic scaling - from experimenting, this kind of scaling had the best-looking results
+        change = math.log(1 + overage / MAX_MSG_LEN) * FONT_MULTIPLIER
         return DEFAULT_FONT_SZ - change
 
 def get_card_from_recipient_data(row, recipient_index, sender, delivery):
     recipient_info = row[recipient_index : recipient_index + RECIPIENT_INFO_LEN]
     recipient, recipient_email, num_flowers, address, room_no, message, _ = recipient_info
 
-    if not recipient: # happens for rows where people don't designate all 12 possible recipients
+    if not recipient: # Happens for rows where people don't designate all 12 possible recipients
         return None
 
     message = message.strip()
@@ -75,29 +76,36 @@ def generate_cards_from_csv(csv_file):
         reader = csv.reader(responses, delimiter=',')
         first = True
         for row in reader:
-            # skip first row
+            # Skip first row
             if first:
                 first = False
                 continue
 
-            # sender data
+            # Grab sender data
             sender = row[SENDER_DISPLAY_IDX]
-            if not sender:
-                sender = "Anonymous"
+            if not sender: sender = "Anonymous"
             delivery = True if row[DELIVERY_IDX] == "Delivery" else False # Delivery or pickup?
 
+            # Potentially need to create MAX_RECIPIENTS_PER_SENDER cards for this particular sender
             for ri in range(MAX_RECIPIENTS_PER_SENDER):
+                # Find the correct offset into CSV columns for this particular recipient
                 recipient_index = ri * RECIPIENT_INFO_LEN + SENDER_INFO_LEN
                 card = get_card_from_recipient_data(row, recipient_index, sender, delivery)
                 if card: cards.append(card)
     return cards
 
 def create_individual_pdfs(cards):
+    """
+    Creates two individual PDFs: one for the messages, one for the sender/recipient info.
+    These are spliced into a single PDF later.
+    """
     loader = jinja2.FileSystemLoader(searchpath="./")
     env = jinja2.Environment(loader=loader)
     message_template = env.get_template(MESSAGE_TEMPLATE_FILE)
     info_template = env.get_template(INFO_TEMPLATE_FILE)
 
+    # Since we are printing double-sided, the cards for the back of the page must
+    # be reordered - each row is reversed, so that it matches up to the front correctly.
     reordered_cards = []
     for i in range(0, len(cards), 2):
         first = cards[i]
@@ -121,6 +129,8 @@ def splice_pdfs_into_final():
                 messages_reader = PdfFileReader(messages)
                 info_reader = PdfFileReader(info)
 
+                # Alternate between a message page (front) and an info page (back)
+                # so that the double-sided printing works
                 for i in range(messages_reader.getNumPages()):
                     writer.addPage(messages_reader.getPage(i))
                     writer.addPage(info_reader.getPage(i))
