@@ -1,0 +1,23 @@
+<head>
+    <link rel="stylesheet" href="style.css">
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+</head>
+
+<div class="container">
+    {% for card in cards %}
+    <div class="card">
+        <img class="card-bg" src="{{ back_img }}">
+        <span class="card-content"">
+            To: {{card.recipient}}<br>
+            From: {{card.sender}}<br>
+            {% if card.delivery %} <!-- only add address if sender specified they want it delivered -->
+                Deliver to: {{card.address}}<br>
+            {% endif %}
+        </span>
+        <span class="num_flowers">
+            {{card.num_flowers}}
+        </span>
+    </div>
+    {% endfor %}
+    <div class="card"></div>
+</div>

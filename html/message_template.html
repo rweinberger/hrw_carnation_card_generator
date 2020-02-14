@@ -1,0 +1,16 @@
+<head>
+    <link rel="stylesheet" href="style.css">
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+</head>
+
+<div class="container">
+    {% for card in cards %}
+    <div class="card">
+        <img class="card-bg" src="{{ front_img }}">
+        <span class="card-content" style="font-size: {{ card.font_size }};">
+            {{ card.message }}
+        </span>
+    </div>
+    {% endfor %}
+    <div class="card"></div>
+</div>

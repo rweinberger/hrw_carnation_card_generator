@@ -1,0 +1,43 @@
+/* background image aspect ratio 500/293 */
+
+html {
+    font-family: Verdana;
+}
+
+.container {
+    text-align: justify;
+}
+
+.card {
+    text-align: left;
+    position: relative;
+    display: inline-block;
+    width: 400px;
+    height: 234px;
+    overflow: hidden;
+}
+
+.card-bg {
+    position: absolute;
+    width: 400px;
+    top: 0px;
+    left: 0px;
+    z-index: 0;
+}
+
+.card-content {
+    width: 300px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    padding: 50px;
+    z-index: 1;
+    word-wrap: break-word;
+}
+
+.num_flowers {
+    position: absolute;
+    bottom: 20;
+    right: 25;
+    padding: 20px;
+}
